@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using LINQtoCSV;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace WaremeteGadget
 {
@@ -158,6 +160,7 @@ namespace WaremeteGadget
             this.Close();
             Environment.Exit(0);            
         }
+
 
     }
 

@@ -1,9 +1,10 @@
 ﻿<Window x:Class="WaremeteGadget.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="WaremeteGadget"
-        WindowStyle="None" Background="Gray" AllowsTransparency="True"
-        MouseMove="Window_MouseMove" MouseRightButtonUp="Window_MouseRightButtonUp" >
+        Title="WaremeteGadget" Name="mainWindow"
+        Width="2000" Height="4000"
+        WindowStyle="None" Background="Transparent" AllowsTransparency="True"
+        MouseMove="Window_MouseMove" MouseRightButtonUp="Window_MouseRightButtonUp" Loaded="Window_Loaded" >
     
     <Grid>
         <!--身体の画像-->
@@ -25,6 +26,12 @@
                Name="img_mouth" 
                Stretch="None" 
                VerticalAlignment="Top"
+               />
+
+        <Image HorizontalAlignment="Left"
+               Name="img_main"
+               Stretch="Uniform" 
+               VerticalAlignment="Top" 
                />
     </Grid>
 </Window>
