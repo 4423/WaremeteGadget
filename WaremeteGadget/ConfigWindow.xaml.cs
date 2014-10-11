@@ -131,6 +131,34 @@ namespace WaremeteGadget
             this.comboBox_mouth.IsEnabled = isEnable;
         }
 
+
+        private void button_ok_Click(object sender, RoutedEventArgs e)
+        {
+            DataBanker banker = DataBanker.GetInstance;
+
+            banker["SizeInfo"] = this.comboBox_size.SelectedItem;
+            banker["CharaInfo"] = this.comboBox_pose.SelectedItem;
+            banker["DressImage"] = this.comboBox_dress.SelectedItem;
+            banker["EyeImage"] = this.comboBox_eye.SelectedItem;
+            banker["MouthImage"] = this.comboBox_mouth.SelectedItem;
+
+            banker["IsApply"] = true;
+            this.Close();
+        }
+
+        private void button_cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DataBanker banker = DataBanker.GetInstance;
+            banker["IsApply"] = false;
+            this.Close();
+        }
+
+        private void button_exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            Environment.Exit(0);            
+        }
+
     }
 
 
