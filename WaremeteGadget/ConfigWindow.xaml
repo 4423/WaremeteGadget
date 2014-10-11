@@ -37,17 +37,17 @@
                 <RowDefinition Height="28"/>
             </Grid.RowDefinitions>
             
-            <Label Grid.Row="0" Content="キャラ名" VerticalAlignment="Center" />
-            <Label Grid.Row="1" Content="ポーズ" VerticalAlignment="Center" />
-            <Label Grid.Row="2" Content="サイズ" VerticalAlignment="Center" />
+            <Label Grid.Row="1" Content="キャラ名" VerticalAlignment="Center" />
+            <Label Grid.Row="2" Content="ポーズ" VerticalAlignment="Center" />
+            <Label Grid.Row="0" Content="サイズ" VerticalAlignment="Center" />
             <Label Grid.Row="3" Content="服装" VerticalAlignment="Center" />
             <Label Grid.Row="4" Content="表情・目" VerticalAlignment="Center" />
             <Label Grid.Row="5" Content="表情・口" VerticalAlignment="Center" />
 
-            <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_char" DisplayMemberPath="CharName" SelectionChanged="comboBox_char_SelectionChanged" />
-            <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_pose" DisplayMemberPath="PoseName"
+            <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_char" DisplayMemberPath="CharName" SelectionChanged="comboBox_char_SelectionChanged" />
+            <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_pose" DisplayMemberPath="PoseName"
                       ItemsSource="{Binding SelectedItem, ElementName=comboBox_char}" SelectionChanged="comboBox_pose_SelectionChanged"/>
-            <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_size" DisplayMemberPath="{Binding SizeData.Label}"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_size" DisplayMemberPath="{Binding SizeData.Label}" SelectionChanged="comboBox_size_SelectionChanged"/>
             <ComboBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_dress" DisplayMemberPath="Name"/>
             <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_eye"/>
             <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_mouth"/>

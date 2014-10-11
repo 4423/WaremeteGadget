@@ -52,6 +52,9 @@ namespace WaremeteGadget
             sizeData.Add(new SizeData() { Label = "Large", Value = "3" });
             sizeData.Add(new SizeData() { Label = "Face", Value = "4" });
             this.comboBox_size.ItemsSource = sizeData;
+
+            //サイズが選択されるまでは他のComboBoxを無効にする
+            EnableComboBox(false);
         }
 
 
@@ -63,7 +66,8 @@ namespace WaremeteGadget
             var charData = (CharDataFile)this.comboBox_pose.SelectedItem;
 
             //服装・表情データ読み込み
-            string filename = charData.PoseFile + "_1" + ".txt";
+            string size = ((SizeData)this.comboBox_size.SelectedItem).Value;
+            string filename = charData.PoseFile + "_" + size + ".txt";
             string filepath = Directory.GetCurrentDirectory() + @"\data\" + filename;
 
             if (!File.Exists(filepath))
@@ -99,6 +103,15 @@ namespace WaremeteGadget
         }
 
 
+        private void comboBox_size_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.comboBox_size.SelectedItem != null)
+            {
+                EnableComboBox(true);
+            }
+        }
+
+
         private void InitializeComboBox()
         {
             this.comboBox_dress.ItemsSource = null;
@@ -107,6 +120,15 @@ namespace WaremeteGadget
             this.comboBox_eye.Items.Clear();
             this.comboBox_mouth.ItemsSource = null;
             this.comboBox_mouth.Items.Clear();
+        }
+
+        private void EnableComboBox(bool isEnable)
+        {
+            this.comboBox_char.IsEnabled = isEnable;
+            this.comboBox_pose.IsEnabled = isEnable;
+            this.comboBox_dress.IsEnabled = isEnable;
+            this.comboBox_eye.IsEnabled = isEnable;
+            this.comboBox_mouth.IsEnabled = isEnable;
         }
 
     }
