@@ -24,5 +24,17 @@ namespace WaremeteGadget
         {
             InitializeComponent();
         }
+
+        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ConfigWindow window = new ConfigWindow();
+            window.ShowDialog();
+            //設定の変更            
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
+        }
     }
 }
