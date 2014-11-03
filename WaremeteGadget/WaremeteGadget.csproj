@@ -56,7 +56,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BlushItems.cs" />
+    <Compile Include="CharInitReader.cs" />
     <Compile Include="ImageDataFile.cs" />
+    <Compile Include="FgFileReader.cs" />
+    <Compile Include="ImageInfoGenerator.cs" />
+    <Compile Include="SelectedItems.cs" />
     <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

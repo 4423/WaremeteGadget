@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WaremeteGadget.Properties;
+using System.Windows.Threading;
 
 namespace WaremeteGadget
 {
@@ -22,10 +23,44 @@ namespace WaremeteGadget
     /// </summary>
     public partial class MainWindow : Window
     {
+        
+        DispatcherTimer timer;
+        DataBanker banker;
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            banker = DataBanker.GetInstance;
+
+            timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Tick += new EventHandler(dispatcherTimer_Tick);
+            timer.Start();
         }
+
+
+        int openEyeSec = 5;
+        void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            if (openEyeSec-- == 0)
+            {
+                //乱数生成
+                openEyeSec = new Random().Next(3, 9);
+                //MessageBox.Show("瞬き！");
+            }
+
+        }
+
+        
+        private void DoWink()
+        {
+            var eyeInfo = (ImageDataFile)banker["EyeImage"];    //だいたい同じ画像だから一々生成は無駄
+            string id = eyeInfo.GroupLayerId;
+
+        }
+
 
         private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -55,7 +90,8 @@ namespace WaremeteGadget
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            if (Settings.Default.IsFirst)
+            //if (Settings.Default.IsFirst)
+            if(true)
             {
                 BitmapImage defaultImage = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + @"\main.png"));
                 this.img_main.Source = defaultImage;
@@ -75,48 +111,45 @@ namespace WaremeteGadget
 
         private void DrawImage()
         {
-            DataBanker banker = DataBanker.GetInstance;
-            var size = (SizeData)banker["SizeInfo"];
-            var charInfo = (CharDataFile)banker["CharaInfo"];
-            var dressInfo = (ImageDataFile)banker["DressImage"];
-            var eyeInfo = (ImageDataFile)banker["EyeImage"];
-            var mouthInfo = (ImageDataFile)banker["MouthImage"];
-            
-            int dress_x = Settings.Default.dress_x = Convert.ToInt32(dressInfo.Left);
-            int dress_y = Settings.Default.dress_y = Convert.ToInt32(dressInfo.Top);
-            int eye_x = Settings.Default.eye_x = Convert.ToInt32(eyeInfo.Left);
-            int eye_y = Settings.Default.eye_y = Convert.ToInt32(eyeInfo.Top);
-            int mouth_x = Settings.Default.mouth_x = Convert.ToInt32(mouthInfo.Left);
-            int mouth_y = Settings.Default.mouth_y = Convert.ToInt32(mouthInfo.Top);
+            var items = (SelectedItems)banker["SelectedItems"];
+            var generator = new ImageInfoGenerator(items);
 
-            string baseName = Directory.GetCurrentDirectory() + @"\data\" + charInfo.PoseFile + "_" + size.Value + "_";
-            string dressName = Settings.Default.dressName = baseName + dressInfo.LayerId + ".png";
-            string eyeName = Settings.Default.eyeName = baseName + eyeInfo.LayerId + ".png";
-            string mouthName = Settings.Default.mouthName = baseName + mouthInfo.LayerId + ".png";           
+
+            //var size = (SizeData)banker["SizeInfo"];
+            //var charInfo = (CharDataFile)banker["CharaInfo"];
+            //var dressInfo = (ImageDataFile)banker["DressImage"];
+            //var eyeInfo = (ImageDataFile)banker["EyeImage"];
+            //var mouthInfo = (ImageDataFile)banker["MouthImage"];
+            
+            //int dress_x = Settings.Default.dress_x = Convert.ToInt32(dressInfo.Left);
+            //int dress_y = Settings.Default.dress_y = Convert.ToInt32(dressInfo.Top);
+            //int eye_x = Settings.Default.eye_x = Convert.ToInt32(eyeInfo.Left);
+            //int eye_y = Settings.Default.eye_y = Convert.ToInt32(eyeInfo.Top);
+            //int mouth_x = Settings.Default.mouth_x = Convert.ToInt32(mouthInfo.Left);
+            //int mouth_y = Settings.Default.mouth_y = Convert.ToInt32(mouthInfo.Top);
+
+            //string baseName = Directory.GetCurrentDirectory() + @"\data\" + charInfo.PoseFile + "_" + size.Value + "_";
+            //string dressName = Settings.Default.dressName = baseName + dressInfo.LayerId + ".png";
+            //string eyeName = Settings.Default.eyeName = baseName + eyeInfo.LayerId + ".png";
+            //string mouthName = Settings.Default.mouthName = baseName + mouthInfo.LayerId + ".png";           
 
             Settings.Default.Save();
 
+            //TODO 暫定的First()
+
             //身体
-            BitmapImage biBody = new BitmapImage(new Uri(dressName));
-            Thickness thickBody = new Thickness(dress_x, dress_y, 0, 0);
+            img_body.Source = new BitmapImage(generator.DressFileName());
+            img_body.Margin = generator.DressMargin();
 
             //目
-            BitmapImage biEye = new BitmapImage(new Uri(eyeName));
-            Thickness thickEye = new Thickness(eye_x, eye_y, 0, 0);
+            var eyeLayers = generator.EyesFileName();   //目パチ用レイヤー
+            img_eyes.Source = new BitmapImage(eyeLayers.First());
+            img_eyes.Margin = generator.EyesMargin().First();
 
             //口
-            BitmapImage biMouth = new BitmapImage(new Uri(mouthName));
-            Thickness thickMouth = new Thickness(mouth_x, mouth_y, 0, 0);
-            
-            //描画
-            img_body.Margin = thickBody;
-            img_body.Source = biBody;
-
-            img_eyes.Margin = thickEye;
-            img_eyes.Source = biEye;
-
-            img_mouth.Margin = thickMouth;
-            img_mouth.Source = biMouth;
+            var mouthLayers = generator.MouthsFileName();
+            img_mouth.Source = new BitmapImage(mouthLayers.First());
+            img_mouth.Margin = generator.MouthsMargin().First();
         }
 
 

@@ -23,37 +23,28 @@ namespace WaremeteGadget
     /// </summary>
     public partial class ConfigWindow : Window
     {
+        DataBanker banker;
+
+
         public ConfigWindow()
         {
             InitializeComponent();
+
+            banker = DataBanker.GetInstance;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             string filepath = Directory.GetCurrentDirectory() + @"\data\charinit.csv";
 
-            //CSVファイル読み込み
-            var context = new CsvContext();
-            var description = new CsvFileDescription
-            {
-                SeparatorChar = ',',
-                FirstLineHasColumnNames = true,
-                TextEncoding = Encoding.GetEncoding(932)
-            };
-
+            CharInitReader reader = new CharInitReader(filepath);
             //キャラクター名でグルーピング
-            var charData = (
-                from data in context.Read<CharDataFile>(filepath, description).Skip(1)
-                select data).ToLookup(p => p.CharName);
+            var groupingCharData = reader.ReadAll().ToLookup(p => p.CharName);
+            this.comboBox_char.ItemsSource = groupingCharData;
 
-            this.comboBox_char.ItemsSource = charData;
-
-            var sizeData = new List<SizeData>();
-            sizeData.Add(new SizeData() { Label = "Small", Value = "1" });
-            sizeData.Add(new SizeData() { Label = "Medium", Value = "2" });
-            sizeData.Add(new SizeData() { Label = "Large", Value = "3" });
-            sizeData.Add(new SizeData() { Label = "Face", Value = "4" });
-            this.comboBox_size.ItemsSource = sizeData;
+            //初期選択可能項目
+            this.comboBox_blush.ItemsSource = BlushItems();
+            this.comboBox_size.ItemsSource = SizeData();
 
             //サイズが選択されるまでは他のComboBoxを無効にする
             EnableComboBox(false);
@@ -68,10 +59,7 @@ namespace WaremeteGadget
             var charData = (CharDataFile)this.comboBox_pose.SelectedItem;
 
             //服装・表情データ読み込み
-            string size = ((SizeData)this.comboBox_size.SelectedItem).Value;
-            string filename = charData.PoseFile + "_" + size + ".txt";
-            string filepath = Directory.GetCurrentDirectory() + @"\data\" + filename;
-
+            string filepath = GetLayerInfoFilePath();
             if (!File.Exists(filepath))
             {
                 MessageBox.Show("このポーズは使用することが出来ません。\n他のポーズを選択して下さい。", "",
@@ -80,22 +68,12 @@ namespace WaremeteGadget
                 return;
             }
 
-            var context = new CsvContext();
-            var description = new CsvFileDescription
-            {
-                SeparatorChar = '\t',
-                FirstLineHasColumnNames = false,    //TODO ヘッダの末尾に\tがあるファイルがあるのでtrueにすると落ちる
-                EnforceCsvColumnAttribute = true,
-                TextEncoding = Encoding.GetEncoding(932)
-            };
-
-            var imageData =
-                from data in context.Read<ImageDataFile>(filepath, description).Skip(2)
-                select data;
-            
+            FgFileReader reader = new FgFileReader(filepath);
+            var imageData = reader.ReadAll(); 
+           
             this.comboBox_dress.ItemsSource = imageData.Where(s => s.Name.IndexOf("腕") == 0);
-            this.comboBox_eye.ItemsSource = imageData.Where(s => s.Name.IndexOf("目_") != -1);
-            this.comboBox_mouth.ItemsSource = imageData.Where(s => s.Name.IndexOf("口_") != -1);
+            this.comboBox_eye.ItemsSource = imageData.Where(s => s.Name.IndexOf("目") == 0 && s.LayerType == "2");
+            this.comboBox_mouth.ItemsSource = imageData.Where(s => s.Name.IndexOf("口") == 0 && s.LayerType == "2");
         }
 
 
@@ -114,6 +92,9 @@ namespace WaremeteGadget
         }
 
 
+        /// <summary>
+        /// 服装と表情に関するComboBoxのアイテムを初期化する。
+        /// </summary>
         private void InitializeComboBox()
         {
             this.comboBox_dress.ItemsSource = null;
@@ -124,6 +105,11 @@ namespace WaremeteGadget
             this.comboBox_mouth.Items.Clear();
         }
 
+
+        /// <summary>
+        /// ComboBoxの操作可否を設定する。
+        /// </summary>
+        /// <param name="isEnable">ComboBoxの操作可否。</param>
         private void EnableComboBox(bool isEnable)
         {
             this.comboBox_char.IsEnabled = isEnable;
@@ -131,29 +117,87 @@ namespace WaremeteGadget
             this.comboBox_dress.IsEnabled = isEnable;
             this.comboBox_eye.IsEnabled = isEnable;
             this.comboBox_mouth.IsEnabled = isEnable;
+            this.comboBox_blush.IsEnabled = isEnable;
         }
 
 
+        /// <summary>
+        /// レイヤー情報が含まれてるtxtファイルのファイルパスを、
+        /// 選択されているComboBoxの値から生成します。
+        /// </summary>
+        /// <returns></returns>
+        private string GetLayerInfoFilePath()
+        {
+            return String.Format("{0}\\data\\{1}_{2}.txt",
+                                       Directory.GetCurrentDirectory(),
+                                       SelectedPose().PoseFile,
+                                       SelectedSize().Value);
+        }
+
+
+        /// <summary>
+        /// SizeDataのセットを提供します。
+        /// </summary>
+        /// <returns></returns>
+        private List<SizeData> SizeData()
+        {
+            var sizeData = new List<SizeData>();
+            sizeData.Add(new SizeData() { Label = "Small", Value = "1" });
+            sizeData.Add(new SizeData() { Label = "Medium", Value = "2" });
+            sizeData.Add(new SizeData() { Label = "Large", Value = "3" });
+            sizeData.Add(new SizeData() { Label = "Face", Value = "4" });
+
+            return sizeData;
+        }
+
+        private List<BlushItems> BlushItems()
+        {
+            var blushLevel = new List<BlushItems>();
+            blushLevel.Add(new BlushItems() { Level = BlushLevel.None });
+            blushLevel.Add(new BlushItems() { Level = BlushLevel.Low });
+            blushLevel.Add(new BlushItems() { Level = BlushLevel.High });
+            return blushLevel;
+        }
+
+
+    /****ボタン処理****/
         private void button_ok_Click(object sender, RoutedEventArgs e)
         {
-            DataBanker banker = DataBanker.GetInstance;
+            //TODO ComboBox全て入力されているかチェック
 
-            banker["SizeInfo"] = this.comboBox_size.SelectedItem;
-            banker["CharaInfo"] = this.comboBox_pose.SelectedItem;
-            banker["DressImage"] = this.comboBox_dress.SelectedItem;
-            banker["EyeImage"] = this.comboBox_eye.SelectedItem;
-            banker["MouthImage"] = this.comboBox_mouth.SelectedItem;
+            string filepath = GetLayerInfoFilePath();
 
+            //選択された表情のIDに一致する差分表情を取得
+            FgFileReader reader = new FgFileReader(filepath);
+            var eyeLayers = reader.GetGroupLayers(SelectedEye().LayerId);
+            var mouthLayers = reader.GetGroupLayers(SelectedMouth().LayerId);
+                        
+            SelectedItems items = new SelectedItems()
+            {
+                LayerInfoFilePath = filepath,
+                Size = SelectedSize(),
+                CharacterInfo = SelectedPose(),
+                Dress = SelectedDress(),
+                IsWink = true,
+                Eyes = eyeLayers.Where(s=> SlectedBlushLevel().IsMatch(s.Name)),
+                IsLipSync = false,
+                Mouths = mouthLayers,
+                BlushLevel = SlectedBlushLevel()
+            };
+
+            banker["SelectedItems"] = items;
             banker["IsApply"] = true;
+
             this.Close();
         }
 
+
         private void button_cancel_Click(object sender, RoutedEventArgs e)
-        {
-            DataBanker banker = DataBanker.GetInstance;
+        {            
             banker["IsApply"] = false;
             this.Close();
         }
+
 
         private void button_exit_Click(object sender, RoutedEventArgs e)
         {
@@ -162,6 +206,37 @@ namespace WaremeteGadget
         }
 
 
+
+    /****ComboBoxのSelectedItemのラッパー****/
+        private SizeData SelectedSize()
+        {
+            return (SizeData)this.comboBox_size.SelectedItem;
+        }
+
+        private CharDataFile SelectedPose()
+        {
+            return (CharDataFile)this.comboBox_pose.SelectedItem;
+        }
+
+        private ImageDataFile SelectedDress()
+        {
+            return (ImageDataFile)this.comboBox_dress.SelectedItem;
+        }
+
+        private ImageDataFile SelectedEye()
+        {
+            return (ImageDataFile)this.comboBox_eye.SelectedItem;
+        }
+
+        private ImageDataFile SelectedMouth()
+        {
+            return (ImageDataFile)this.comboBox_mouth.SelectedItem;
+        }
+
+        private BlushItems SlectedBlushLevel()
+        {
+            return (BlushItems)this.comboBox_blush.SelectedItem;
+        }
     }
 
 }

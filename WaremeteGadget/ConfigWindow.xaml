@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local ="clr-namespace:WaremeteGadget"
-        Title="ConfigWindow" Height="300" Width="350"
+        Title="ConfigWindow" Height="330" Width="350"
         ResizeMode="NoResize" Background="#FFE6E6E6"
         WindowStyle="ToolWindow" Loaded="Window_Loaded">    
     
@@ -13,7 +13,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="175"/>
+            <RowDefinition Height="205"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
@@ -35,6 +35,7 @@
                 <RowDefinition Height="28"/>
                 <RowDefinition Height="28"/>
                 <RowDefinition Height="28"/>
+                <RowDefinition Height="28"/>
             </Grid.RowDefinitions>
             
             <Label Grid.Row="1" Content="キャラ名" VerticalAlignment="Center" />
@@ -43,6 +44,7 @@
             <Label Grid.Row="3" Content="服装" VerticalAlignment="Center" />
             <Label Grid.Row="4" Content="表情・目" VerticalAlignment="Center" />
             <Label Grid.Row="5" Content="表情・口" VerticalAlignment="Center" />
+            <Label Grid.Row="6" Content="照れレベル" VerticalAlignment="Center" />
 
             <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_char" DisplayMemberPath="CharName" SelectionChanged="comboBox_char_SelectionChanged" />
             <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_pose" DisplayMemberPath="PoseName"
@@ -51,6 +53,7 @@
             <ComboBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_dress" DisplayMemberPath="Name"/>
             <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_eye"/>
             <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_mouth"/>
+            <ComboBox Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Name="comboBox_blush"/>
         </Grid>
 
         
