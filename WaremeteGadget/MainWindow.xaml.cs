@@ -26,6 +26,7 @@ namespace WaremeteGadget
         
         DispatcherTimer timer;
         DataBanker banker;
+        ImageInfoGenerator generator;
 
 
         public MainWindow()
@@ -47,17 +48,44 @@ namespace WaremeteGadget
             if (openEyeSec-- == 0)
             {
                 //乱数生成
-                openEyeSec = new Random().Next(3, 9);
-                //MessageBox.Show("瞬き！");
+                openEyeSec = new Random().Next(2, 9);
+                Wink();
             }
 
         }
 
         
-        private void DoWink()
+        private async void Wink()
         {
-            var eyeInfo = (ImageDataFile)banker["EyeImage"];    //だいたい同じ画像だから一々生成は無駄
-            string id = eyeInfo.GroupLayerId;
+            if (generator == null)
+            {
+                return;
+            }
+
+            var eyeLayers = generator.EyesFileName();
+            
+            //半目
+            img_eyes.Source = new BitmapImage(eyeLayers.ElementAt(1));
+            img_eyes.Margin = generator.EyesMargin().ElementAt(1);
+            Utility.DoEvents();
+            await Task.Delay(100);
+
+            //閉じる
+            img_eyes.Source = new BitmapImage(eyeLayers.ElementAt(2));
+            img_eyes.Margin = generator.EyesMargin().ElementAt(2);
+            Utility.DoEvents();
+            await Task.Delay(70);
+
+            //半目
+            img_eyes.Source = new BitmapImage(eyeLayers.ElementAt(1));
+            img_eyes.Margin = generator.EyesMargin().ElementAt(1);
+            Utility.DoEvents();
+            await Task.Delay(70);
+
+            //開く
+            img_eyes.Source = new BitmapImage(eyeLayers.ElementAt(0));
+            img_eyes.Margin = generator.EyesMargin().ElementAt(0);
+            Utility.DoEvents();
 
         }
 
@@ -102,38 +130,13 @@ namespace WaremeteGadget
                 Settings.Default.IsFirst = false;
                 Settings.Default.Save();
             }
-            else
-            {                
-                LoadedDrawImage();
-            }
         }
 
 
         private void DrawImage()
         {
             var items = (SelectedItems)banker["SelectedItems"];
-            var generator = new ImageInfoGenerator(items);
-
-
-            //var size = (SizeData)banker["SizeInfo"];
-            //var charInfo = (CharDataFile)banker["CharaInfo"];
-            //var dressInfo = (ImageDataFile)banker["DressImage"];
-            //var eyeInfo = (ImageDataFile)banker["EyeImage"];
-            //var mouthInfo = (ImageDataFile)banker["MouthImage"];
-            
-            //int dress_x = Settings.Default.dress_x = Convert.ToInt32(dressInfo.Left);
-            //int dress_y = Settings.Default.dress_y = Convert.ToInt32(dressInfo.Top);
-            //int eye_x = Settings.Default.eye_x = Convert.ToInt32(eyeInfo.Left);
-            //int eye_y = Settings.Default.eye_y = Convert.ToInt32(eyeInfo.Top);
-            //int mouth_x = Settings.Default.mouth_x = Convert.ToInt32(mouthInfo.Left);
-            //int mouth_y = Settings.Default.mouth_y = Convert.ToInt32(mouthInfo.Top);
-
-            //string baseName = Directory.GetCurrentDirectory() + @"\data\" + charInfo.PoseFile + "_" + size.Value + "_";
-            //string dressName = Settings.Default.dressName = baseName + dressInfo.LayerId + ".png";
-            //string eyeName = Settings.Default.eyeName = baseName + eyeInfo.LayerId + ".png";
-            //string mouthName = Settings.Default.mouthName = baseName + mouthInfo.LayerId + ".png";           
-
-            Settings.Default.Save();
+            generator = new ImageInfoGenerator(items);
 
             //TODO 暫定的First()
 
@@ -148,46 +151,8 @@ namespace WaremeteGadget
 
             //口
             var mouthLayers = generator.MouthsFileName();
-            img_mouth.Source = new BitmapImage(mouthLayers.First());
-            img_mouth.Margin = generator.MouthsMargin().First();
-        }
-
-
-
-
-        private void LoadedDrawImage()
-        {
-            int dress_x = Settings.Default.dress_x;
-            int dress_y = Settings.Default.dress_y;
-            int eye_x = Settings.Default.eye_x;
-            int eye_y = Settings.Default.eye_y;
-            int mouth_x = Settings.Default.mouth_x;
-            int mouth_y = Settings.Default.mouth_y;
-            string dressName = Settings.Default.dressName;
-            string eyeName = Settings.Default.eyeName;
-            string mouthName = Settings.Default.mouthName;
-
-            //身体
-            BitmapImage biBody = new BitmapImage(new Uri(dressName));
-            Thickness thickBody = new Thickness(dress_x, dress_y, 0, 0);
-
-            //目
-            BitmapImage biEye = new BitmapImage(new Uri(eyeName));
-            Thickness thickEye = new Thickness(eye_x, eye_y, 0, 0);
-
-            //口
-            BitmapImage biMouth = new BitmapImage(new Uri(mouthName));
-            Thickness thickMouth = new Thickness(mouth_x, mouth_y, 0, 0);
-            
-            //描画
-            img_body.Margin = thickBody;
-            img_body.Source = biBody;
-
-            img_eyes.Margin = thickEye;
-            img_eyes.Source = biEye;
-
-            img_mouth.Margin = thickMouth;
-            img_mouth.Source = biMouth;
+            img_mouth.Source = new BitmapImage(mouthLayers.Last());
+            img_mouth.Margin = generator.MouthsMargin().Last();
         }
 
     }

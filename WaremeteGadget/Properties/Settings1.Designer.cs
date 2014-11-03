@@ -25,10 +25,9 @@ namespace WaremeteGadget.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string dressName {
+        public global::System.Uri dressName {
             get {
-                return ((string)(this["dressName"]));
+                return ((global::System.Uri)(this["dressName"]));
             }
             set {
                 this["dressName"] = value;
@@ -37,10 +36,9 @@ namespace WaremeteGadget.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string eyeName {
+        public global::System.Uri eyeName {
             get {
-                return ((string)(this["eyeName"]));
+                return ((global::System.Uri)(this["eyeName"]));
             }
             set {
                 this["eyeName"] = value;
@@ -49,10 +47,9 @@ namespace WaremeteGadget.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string mouthName {
+        public global::System.Uri mouthName {
             get {
-                return ((string)(this["mouthName"]));
+                return ((global::System.Uri)(this["mouthName"]));
             }
             set {
                 this["mouthName"] = value;
@@ -73,85 +70,37 @@ namespace WaremeteGadget.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int dress_x {
+        [global::System.Configuration.DefaultSettingValueAttribute("0,0,0,0")]
+        public global::System.Windows.Thickness dressMargin {
             get {
-                return ((int)(this["dress_x"]));
+                return ((global::System.Windows.Thickness)(this["dressMargin"]));
             }
             set {
-                this["dress_x"] = value;
+                this["dressMargin"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int dress_y {
+        [global::System.Configuration.DefaultSettingValueAttribute("0,0,0,0")]
+        public global::System.Windows.Thickness eyeMargin {
             get {
-                return ((int)(this["dress_y"]));
+                return ((global::System.Windows.Thickness)(this["eyeMargin"]));
             }
             set {
-                this["dress_y"] = value;
+                this["eyeMargin"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int eye_x {
+        [global::System.Configuration.DefaultSettingValueAttribute("0,0,0,0")]
+        public global::System.Windows.Thickness mouthMargin {
             get {
-                return ((int)(this["eye_x"]));
+                return ((global::System.Windows.Thickness)(this["mouthMargin"]));
             }
             set {
-                this["eye_x"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int eye_y {
-            get {
-                return ((int)(this["eye_y"]));
-            }
-            set {
-                this["eye_y"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int mouth_x {
-            get {
-                return ((int)(this["mouth_x"]));
-            }
-            set {
-                this["mouth_x"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int mouth_y {
-            get {
-                return ((int)(this["mouth_y"]));
-            }
-            set {
-                this["mouth_y"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Setting {
-            get {
-                return ((string)(this["Setting"]));
-            }
-            set {
-                this["Setting"] = value;
+                this["mouthMargin"] = value;
             }
         }
     }
