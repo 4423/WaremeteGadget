@@ -163,7 +163,11 @@ namespace WaremeteGadget
     /****ボタン処理****/
         private void button_ok_Click(object sender, RoutedEventArgs e)
         {
-            //TODO ComboBox全て入力されているかチェック
+            if (!IsAllChecked())
+            {
+                MessageBox.Show("全ての項目を設定して下さい。", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             string filepath = GetLayerInfoFilePath();
 
@@ -178,7 +182,7 @@ namespace WaremeteGadget
                 Size = SelectedSize(),
                 CharacterInfo = SelectedPose(),
                 Dress = SelectedDress(),
-                IsWink = true,
+                IsWink = (bool)this.checkbox_wink.IsChecked,
                 Eyes = eyeLayers.Where(s=> SlectedBlushLevel().IsMatch(s.Name)),
                 IsLipSync = false,
                 Mouths = mouthLayers,
@@ -189,6 +193,18 @@ namespace WaremeteGadget
             banker["IsApply"] = true;
 
             this.Close();
+        }
+
+
+        private bool IsAllChecked()
+        {
+            return this.comboBox_blush.SelectedIndex != -1
+                && this.comboBox_char.SelectedIndex != -1
+                && this.comboBox_dress.SelectedIndex != -1
+                && this.comboBox_eye.SelectedIndex != -1
+                && this.comboBox_mouth.SelectedIndex != -1
+                && this.comboBox_pose.SelectedIndex != -1
+                && this.comboBox_size.SelectedIndex != -1;
         }
 
 

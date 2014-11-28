@@ -19,8 +19,8 @@
         </Grid.RowDefinitions>
         
         <Label Grid.Row="0" Content="キャラクター設定"/>
-        <CheckBox Grid.Row="2" Content="ボイス再生を有効にする" />
-        <CheckBox Grid.Row="3" Content="目パチを有効にする" />  
+        <CheckBox Grid.Row="3" Name="checkbox_voice" Content="口パクを有効にする" IsEnabled="False" ToolTip="この機能は現在のバージョンでは未実装です。"/>
+        <CheckBox Grid.Row="2" Name="checkbox_wink" Content="目パチを有効にする" IsChecked="True" />  
         
         
         <Grid Grid.Row="1" Margin="10,0,0,0">
